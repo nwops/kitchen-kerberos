@@ -31,7 +31,7 @@ module Train::Transports
   class SSHPTYFailed < Train::TransportError; end
 
   # A Transport which uses the SSH protocol to execute commands and transfer
-  # files.
+  # files while using gssapi-with-mic authentication
   #
   # @author Fletcher Nichol <fnichol@nichol.ca>
   class Kerberos < Train::Transports::Ssh
