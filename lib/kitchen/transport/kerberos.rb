@@ -36,34 +36,8 @@ module Kitchen
     # files.
     #
     # @author Fletcher Nichol <fnichol@nichol.ca>
-    class Kerberos < Kitchen::Transport::Base
-      kitchen_transport_api_version 1
-
-      plugin_version Kitchen::VERSION
-
-      default_config :port, 22
-      default_config :username, "root"
-      default_config :keepalive, true
-      default_config :keepalive_interval, 60
-      # needs to be one less than the configured sshd_config MaxSessions
-      default_config :max_ssh_sessions, 9
-      default_config :connection_timeout, 15
-      default_config :connection_retries, 5
-      default_config :connection_retry_sleep, 1
-      default_config :max_wait_until_ready, 600
-
-      default_config :ssh_gateway, nil
-      default_config :ssh_gateway_username, nil
-
-      # compression disabled by default for speed
-      default_config :compression, false
-      required_config :compression
-
-      default_config :compression_level do |transport|
-        transport[:compression] == false ? 0 : 6
-      end
-
-
+    class Kerberos < Kitchen::Transport::Ssh
+    
       private
 
       # Builds the hash of options needed by the Connection object on
@@ -92,7 +66,7 @@ module Kitchen
           max_wait_until_ready: data[:max_wait_until_ready],
           ssh_gateway: data[:ssh_gateway],
           ssh_gateway_username: data[:ssh_gateway_username],
-	  auth_methods: %w[gssapi-with-mic]
+	        auth_methods: %w[gssapi-with-mic]
         }
 
         opts[:forward_agent] = data[:forward_agent] if data.key?(:forward_agent)
