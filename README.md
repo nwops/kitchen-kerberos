@@ -3,7 +3,9 @@ If you want test kitchen to login via kerberos tickets, this is what you need.
 
 This is a subclass of the ssh kitchen transport to allow for gssapi-with-mic login for NET::SSH
 
-This also provides Kerberos auth for train which is used for inspec testing
+Additionally, if you use kitchen-inspec this provides a kerberos transport for train and a new kitchen verifier for inspec_kerberos.
+
+If you only use inspec you can utilize the train transport as well without the use of kitchen.
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -26,6 +28,9 @@ Or install it yourself as:
 transport:
   name: kerberos
   user: <%= ENV['USER'] %>  # if you don't want the root user
+
+verifier:
+   name: inspec_kerberos     
 ```
 
 ## Development
@@ -42,4 +47,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/logicm
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

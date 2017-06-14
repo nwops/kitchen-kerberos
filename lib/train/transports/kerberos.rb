@@ -34,7 +34,7 @@ module Train::Transports
   # files while using gssapi-with-mic authentication
   #
   # @author Fletcher Nichol <fnichol@nichol.ca>
-  class Kerberos < Train::Transports::Ssh
+  class Kerberos < Train::Transports::SSH
     name 'kerberos'
 
     private

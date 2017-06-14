@@ -16,7 +16,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require 'pluginator'
 require "kitchen/transport/ssh"
 require "kitchen/transport/winrm"
 require "kitchen/verifier/inspec_version"
@@ -30,7 +29,7 @@ module Kitchen
     # InSpec verifier for Kitchen.
     #
     # @author Fletcher Nichol <fnichol@chef.io>
-    class Inspec < Kitchen::Verifier::Base # rubocop:disable Metrics/ClassLength
+    class InspecKerberos < Kitchen::Verifier::Base # rubocop:disable Metrics/ClassLength
       kitchen_verifier_api_version 1
       plugin_version Kitchen::Verifier::INSPEC_VERSION
 
@@ -173,15 +172,15 @@ module Kitchen
       # @api private
       def runner_options(transport, state = {}, platform = nil, suite = nil) # rubocop:disable Metrics/AbcSize
         transport_data = transport.diagnose.merge(state)
-        if transport.is_a?(Kitchen::Transport::Ssh)
+        if defined?(Kitchen::Transport::Kerberos) && transport.is_a?(Kitchen::Transport::Kerberos)
+          runner_options_for_ssh(transport_data, 'kerberos')
+        elsif transport.is_a?(Kitchen::Transport::Ssh)
           runner_options_for_ssh(transport_data, 'ssh')
         elsif transport.is_a?(Kitchen::Transport::Winrm)
           runner_options_for_winrm(transport_data)
         # optional transport which is not in core test-kitchen
         elsif defined?(Kitchen::Transport::Dokken) && transport.is_a?(Kitchen::Transport::Dokken)
           runner_options_for_docker(transport_data)
-        elsif defined?(Kitchen::Transport::Kerberos) && transport.is_a?(Kitchen::Transport::Kerberos)
-          runner_options_for_ssh(transport_data, 'kerberos')
         else
           raise Kitchen::UserError, "Verifier #{name} does not support the #{transport.name} Transport"
         end.tap do |runner_options|
