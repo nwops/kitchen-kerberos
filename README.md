@@ -2,6 +2,8 @@
 If you want test kitchen to login via kerberos tickets, this is what you need.
 
 This is a subclass of the ssh kitchen transport to allow for gssapi-with-mic login for NET::SSH
+
+This also provides Kerberos auth for train which is used for inspec testing
 ## Installation
 
 Add this line to your application's Gemfile:
