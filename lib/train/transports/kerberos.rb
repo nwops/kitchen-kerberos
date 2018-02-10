@@ -56,10 +56,9 @@ module Train::Transports
     # @return [Hash] hash of connection options
     # @api private
     def connection_options(opts)
-      {
+      opts = {
         logger:                 logger,
         user_known_hosts_file:  '/dev/null',
-        paranoid:               false,
         hostname:               opts[:host],
         port:                   opts[:port],
         username:               opts[:user],
@@ -78,7 +77,18 @@ module Train::Transports
         forward_agent:          opts[:forward_agent],
         transport_options:      opts,
       }
+
+      opts[verify_host_key_option] = false
+
+      opts
     end
 
+    # net-ssh >=4.2 has renamed paranoid option to verify_host_key
+    def verify_host_key_option
+      current_net_ssh = Net::SSH::Version::CURRENT
+      new_option_version = Net::SSH::Version[4, 2, 0]
+
+      current_net_ssh >= new_option_version ? :verify_host_key : :paranoid
+    end
   end
 end
