@@ -51,7 +51,6 @@ module Kitchen
         opts = {
           logger: logger,
           user_known_hosts_file: "/dev/null",
-          paranoid: false,
           hostname: data[:hostname],
           port: data[:port],
           username: data[:username],
@@ -69,10 +68,20 @@ module Kitchen
 	        auth_methods: %w[gssapi-with-mic]
         }
 
+        opts[verify_host_key_option] = false
+
         opts[:forward_agent] = data[:forward_agent] if data.key?(:forward_agent)
         opts[:verbose] = data[:verbose].to_sym      if data.key?(:verbose)
 
         opts
+      end
+
+      # net-ssh >=4.2 has renamed paranoid option to verify_host_key
+      def verify_host_key_option
+        current_net_ssh = Net::SSH::Version::CURRENT
+        new_option_version = Net::SSH::Version[4, 2, 0]
+
+        current_net_ssh >= new_option_version ? :verify_host_key : :paranoid
       end
     end
   end
